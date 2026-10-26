@@ -1,6 +1,6 @@
 {
-  "name": "Blank Web Page",
-  "description": "An empty web page with white background and Firebase integration.",
+  "name": "Fiabe sotto le Stelle",
+  "description": "Storie della buonanotte per piccoli sognatori",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
