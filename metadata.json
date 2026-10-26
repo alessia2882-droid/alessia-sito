@@ -1,0 +1,6 @@
+{
+  "name": "Blank Web Page",
+  "description": "An empty web page with white background and Firebase integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

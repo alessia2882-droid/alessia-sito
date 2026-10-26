@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "ImageRecord": {
+      "title": "ImageRecord",
+      "description": "Uploaded image record in CMS",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "url", "userId"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "App settings like header image",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "required": ["url"]
+    }
+  },
+  "firestore": {
+    "/images/{imageId}": {
+      "schema": "ImageRecord",
+      "description": "Images uploaded in CMS"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Global application settings"
+    }
+  }
+}
