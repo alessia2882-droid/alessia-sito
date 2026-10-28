@@ -92,20 +92,7 @@ export default function App() {
     } catch (error) { console.error("Logout error:", error); }
   };
 
-  const handleImageUpload = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!imageFile || !user) return;
-    setUploading(true);
-    try {
-      const dataUrl = await processImageToDataUrl(imageFile);
-      const newRecord = { url: dataUrl, title: imageTitle || imageFile.name, userId: user.uid, createdAt: new Date().toISOString() };
-      const docRef = await addDoc(collection(db, 'images'), newRecord);
-      setImages((prev) => [{ id: docRef.id, ...newRecord }, ...prev]);
-      setLastUploadedUrl(dataUrl);
-      setImageTitle('');
-      setImageFile(null);
-    } catch (error) { console.error(error); } finally { setUploading(false); }
-  };
+
 
   const handleDeleteImage = async (id: string) => {
     try {
@@ -130,19 +117,32 @@ export default function App() {
     });
   };
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const Navbar = () => (
-    <nav className="w-full bg-slate-950 px-6 py-4 grid grid-cols-3 items-center border-b border-purple-800 sticky top-0 z-50">
+    <nav className="w-full bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-purple-800 sticky top-0 z-50">
       <div className="flex items-center">
-        <button onClick={() => setCurrentPage(PAGES.HOME)} className="text-yellow-400 font-bold text-xl hover:text-white transition">Fiabe sotto le Stelle</button>
+        <button onClick={() => { setCurrentPage(PAGES.HOME); setIsMenuOpen(false); }} className="text-yellow-400 font-bold text-xl hover:text-white transition">
+          Fiabe sotto le Stelle
+        </button>
       </div>
-      <div className="flex items-center justify-center gap-8">
+
+      {/* Desktop Menu */}
+      <div className="hidden md:flex items-center justify-center gap-8">
         {Object.values(PAGES).map(p => (
             <button key={p} onClick={() => setCurrentPage(p)} className="text-purple-200 hover:text-yellow-400 transition font-medium text-lg">
                 {p}
             </button>
         ))}
       </div>
-      <div className="flex items-center justify-end gap-3">
+
+      {/* Mobile Toggle */}
+      <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-white p-2">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7"/></svg>
+      </button>
+
+      {/* Auth Button (Desktop) */}
+      <div className="hidden md:flex items-center justify-end gap-3">
         {loading ? <div className="w-24 h-10 bg-slate-800 animate-pulse rounded-xl"></div> : user ? (
           <button onClick={() => setShowCMS(!showCMS)} className="text-sm font-semibold bg-yellow-600 text-white px-4 py-2 rounded-xl hover:bg-yellow-500 transition">
             {showCMS ? 'Visualizza Sito' : 'CMS (Area Riservata)'}
@@ -153,6 +153,27 @@ export default function App() {
           </button>
         )}
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="absolute top-full left-0 w-full bg-slate-900 border-b border-purple-800 p-6 flex flex-col gap-4 md:hidden">
+          {Object.values(PAGES).map(p => (
+            <button key={p} onClick={() => { setCurrentPage(p); setIsMenuOpen(false); }} className="text-purple-200 hover:text-yellow-400 text-lg font-medium py-2">
+                {p}
+            </button>
+          ))}
+          <hr className="border-purple-800" />
+          {loading ? <div className="w-full h-10 bg-slate-800 animate-pulse rounded-xl"></div> : user ? (
+            <button onClick={() => { setShowCMS(!showCMS); setIsMenuOpen(false); }} className="text-sm font-semibold bg-yellow-600 text-white px-4 py-3 rounded-xl hover:bg-yellow-500 transition w-full">
+              {showCMS ? 'Visualizza Sito' : 'CMS (Area Riservata)'}
+            </button>
+          ) : (
+            <button onClick={() => { handleGoogleLogin(); setIsMenuOpen(false); }} className="bg-purple-800 hover:bg-purple-700 text-white font-medium px-5 py-3 rounded-xl transition text-sm w-full">
+              Area Riservata
+            </button>
+          )}
+        </div>
+      )}
     </nav>
   );
 
@@ -194,11 +215,13 @@ export default function App() {
 
   const ChiSono = () => (
     <div className="bg-slate-950 min-h-screen py-20 px-6 text-center text-white">
-        <img src="https://via.placeholder.com/200" alt="Placeholder" className="rounded-full mx-auto mb-8 border-4 border-yellow-500 shadow-2xl" />
-        <div className="max-w-3xl mx-auto space-y-6 text-lg text-purple-100">
-            <h2 className="text-4xl font-bold text-yellow-400">Chi sono</h2>
-            <p>Ho sempre amato le storie fin da bambina, mi hanno accompagnato in mille avventure tra sogno e realtà.</p>
-            <p>Ho dedicato i miei studi a imparare come trasmettere la conoscenza e il piacere di apprendere, e oggi ho scelto di raccogliere le fiabe più belle per raccontarle a te, per accompagnare dolcemente i tuoi sogni e aiutarti ad addormentarti con serenità.</p>
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
+            <img src="/public/assets/aistudio/immagine_sito_bc9abccb.jpeg" alt="Ritratto illustrato di Alessia" className="w-64 h-64 object-cover rounded-2xl shadow-2xl border-4 border-yellow-500" />
+            <div className="space-y-6 text-lg text-purple-100 text-left">
+                <h2 className="text-4xl font-bold text-yellow-400">Chi sono</h2>
+                <p>Ho sempre amato le storie fin da bambina, mi hanno accompagnato in mille avventure tra sogno e realtà.</p>
+                <p>Ho dedicato i miei studi a imparare come trasmettere la conoscenza e il piacere di apprendere, e oggi ho scelto di raccogliere le fiabe più belle per raccontarle a te, per accompagnare dolcemente i tuoi sogni e aiutarti ad addormentarti con serenità.</p>
+            </div>
         </div>
     </div>
   );
@@ -216,15 +239,42 @@ export default function App() {
     </div>
   );
 
+  const handleImageUpload = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!imageFile || !user) return;
+    setUploading(true);
+    try {
+      const dataUrl = await processImageToDataUrl(imageFile);
+      const newRecord = { url: dataUrl, title: imageTitle || imageFile.name, userId: user.uid, createdAt: new Date().toISOString() };
+      const docRef = await addDoc(collection(db, 'images'), newRecord);
+      setImages((prev) => [{ id: docRef.id, ...newRecord }, ...prev]);
+      setLastUploadedUrl(dataUrl);
+      setImageTitle('');
+      setImageFile(null);
+    } catch (error) { console.error(error); } finally { setUploading(false); }
+  };
+
   return (
     <div className="bg-slate-950 min-h-screen text-slate-100 font-sans">
       <Navbar />
       
       {user && showCMS ? (
-        // CMS content (simplified for brevity)
         <div className="max-w-5xl mx-auto px-6 py-12 text-slate-900 bg-white min-h-screen">
-            <h1 className="text-3xl font-bold mb-8">Gestione CMS</h1>
-            {/* ... simplified CMS interface ... */}
+            <h1 className="text-3xl font-bold mb-8">Gestione CMS - Carica Fiaba</h1>
+            <form onSubmit={handleImageUpload} className="bg-slate-100 p-6 rounded-2xl space-y-4 mb-8">
+              <input type="text" placeholder="Titolo Fiaba" value={imageTitle} onChange={(e) => setImageTitle(e.target.value)} className="w-full p-2 border rounded" />
+              <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full" />
+              <button type="submit" disabled={uploading} className="bg-purple-800 text-white p-2 rounded hover:bg-purple-700 transition">
+                {uploading ? 'Caricamento...' : 'Carica su Firebase'}
+              </button>
+            </form>
+            {lastUploadedUrl && (
+              <div className="mt-4 p-4 bg-green-100 border rounded text-sm text-green-800">
+                <p className="mb-2">URL Immagine:</p>
+                <input type="text" readOnly value={lastUploadedUrl} className="w-full p-2 mb-2 border rounded select-all" />
+                <button onClick={() => navigator.clipboard.writeText(lastUploadedUrl)} className="bg-purple-800 text-white px-4 py-2 rounded">Copia URL</button>
+              </div>
+            )}
         </div>
       ) : (
         <>
