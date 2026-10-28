@@ -216,7 +216,7 @@ export default function App() {
   const ChiSono = () => (
     <div className="bg-slate-950 min-h-screen py-20 px-6 text-center text-white">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
-            <img src="/public/assets/aistudio/immagine_sito_bc9abccb.jpeg" alt="Ritratto illustrato di Alessia" className="w-64 h-64 object-cover rounded-2xl shadow-2xl border-4 border-yellow-500" />
+            <img src="/assets/aistudio/immagine_sito_bc9abccb.jpeg" alt="Ritratto illustrato di Alessia" className="w-64 h-64 object-cover rounded-2xl shadow-2xl border-4 border-yellow-500" />
             <div className="space-y-6 text-lg text-purple-100 text-left">
                 <h2 className="text-4xl font-bold text-yellow-400">Chi sono</h2>
                 <p>Ho sempre amato le storie fin da bambina, mi hanno accompagnato in mille avventure tra sogno e realtà.</p>
